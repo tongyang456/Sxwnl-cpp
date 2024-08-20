@@ -1,15 +1,13 @@
 #ifndef LUNAR_SSQ_H
 #define LUNAR_SSQ_H
 
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/static_array.h"
 #include <string>
 #include <array>
 
 class SSQ
 {
-	static char *str_qi;
-	static char *str_so;
+	static char str_qi[7567+1];
+	static char str_so[16598+1];
 	static double suoKB[];
 	static double qiKB[];
 	static char* jieya(int mood);

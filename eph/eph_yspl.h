@@ -1,8 +1,6 @@
 #ifndef EPH_YSPL_H
 #define EPH_YSPL_H
 
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/static_array.h"
 #include <string>
 #include <array>
 

@@ -5,8 +5,6 @@
 #include <set>
 #include <vector>
 #include <algorithm>
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/vector.h"
 #include <string>
 #include <vector>
 #include "../mylib/tool.h"

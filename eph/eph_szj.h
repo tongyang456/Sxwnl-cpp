@@ -1,5 +1,3 @@
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/vector.h"
 #include <string>
 #include <vector>
 

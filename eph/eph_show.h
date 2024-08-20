@@ -1,7 +1,6 @@
 #ifndef EPH_SHOW_H
 #define EPH_SHOW_H
 
-//#include "../mylib/mystl/my_string.h"
 #include "../mylib/tool.h"
 #include <string>
 

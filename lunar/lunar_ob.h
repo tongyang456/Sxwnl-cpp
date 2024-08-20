@@ -1,8 +1,6 @@
 #ifndef LUNAR_OB_H
 #define LUNAR_OB_H
 
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/vector.h"
 #include "../mylib/tool.h"
 #include <string>
 #include <vector>
@@ -89,7 +87,11 @@ public:
 private:
 	static std::vector<std::vector<std::string>> sFtv; //假日表,由init初始化
 	static std::vector<std::string> wFtv;
+    static int a;
+    static std::vector<std::vector<std::string>> sFtv1; //假日表,由init初始化
 };
+constexpr int a  = 1;
+
 
 class OBB//农历对象，气朔计算等
 {

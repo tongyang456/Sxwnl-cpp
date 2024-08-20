@@ -2,7 +2,6 @@
 #define TOOL_H
 
 #include <cstdlib>
-//#include "../mylib/std/my_string.h"
 #include "../mylib/math_patch.h"
 #include <sstream>
 #include <ctime>

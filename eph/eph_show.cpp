@@ -9,8 +9,6 @@
 #include "eph_rspl.h"
 #include "../mylib/lat_lon_data.h"
 #include "../mylib/tool.h"
-//#include "../mylib/mystl/static_array.h"
-//#include "../mylib/mystl/map.h"
 #include <array>
 #include <map>
 

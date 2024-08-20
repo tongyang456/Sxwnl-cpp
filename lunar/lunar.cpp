@@ -8,9 +8,9 @@
 
 void init_ob()
 {
-	OBA::init();
-	OBB::init();
-	SSQ::init();
+	//OBA::init();
+	//OBB::init();
+	//SSQ::init();
 }
 
 /*返回公历某一个月的'公农回'三合历*/

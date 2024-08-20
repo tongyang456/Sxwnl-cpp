@@ -1,7 +1,6 @@
 #ifndef EPH_0_H
 #define EPH_0_H
 
-//#include "../mylib/mystl/static_array.h"
 #include <array>
 #include <string>
 

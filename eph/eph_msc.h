@@ -1,7 +1,6 @@
 #ifndef EPH_MSC_H
 #define EPH_MSC_H
 
-//#include "../mylib/mystl/my_string.h"
 #include <string>
 #include "../mylib/tool.h"
 

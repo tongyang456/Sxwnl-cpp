@@ -27,8 +27,6 @@ API测试
 #include "../mylib/lat_lon_data.h"
 #include "../mylib/tool.h"
 #include "../mylib/math_patch.h"
-//#include "../mylib/mystl/static_array.h"
-//#include "../mylib/mystl/map.h"
 #include <array>
 #include <map>
 #include "solar_bazi.h"
@@ -81,7 +79,7 @@ int main() {
 
     for (int i = 0; i < 1; i++) {
 #if 1
-        Date base = {1993, 2, 26, 2, 0, 1.0};
+        Date base = {1990, 1, 1, 1, 1, 1.0};
         Date date = getDateAfter(base, {0,0,i,0,0,0.0});
         //OB_DAY days = Lunar::riLiCalc(date.Y, date.M, date.D, date.h, date.m, date.s, jw1.J);
         // 返回，有用信息

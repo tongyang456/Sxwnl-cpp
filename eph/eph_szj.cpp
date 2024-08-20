@@ -2,7 +2,6 @@
 #include "eph0.h"
 #include "../mylib/tool.h"
 #include "../mylib/math_patch.h"
-//#include "../mylib/mystl/static_array.h"
 #include <array>
 
 

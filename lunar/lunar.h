@@ -1,9 +1,6 @@
 #ifndef LUNAR_H
 #define LUNAR_H
 
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/vector.h"
-//#include "../mylib/mystl/map.h"
 #include "lunar_ob.h"
 #include <map>
 #include <vector>

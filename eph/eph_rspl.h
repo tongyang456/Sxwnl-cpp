@@ -3,8 +3,6 @@
 #ifndef EPH_RSPL_H
 #define EPH_RSPL_H
 
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/static_array.h"
 #include <string>
 #include <array>
 

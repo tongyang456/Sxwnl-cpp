@@ -1,9 +1,6 @@
 #ifndef EPH_RSGS_H
 #define EPH_RSGS_H
 
-//#include "../mylib/mystl/vector.h"
-//#include "../mylib/mystl/my_string.h"
-//#include "../mylib/mystl/static_array.h"
 #include <array>
 #include <string>
 #include <vector>
