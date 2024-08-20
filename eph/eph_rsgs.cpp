@@ -23,11 +23,11 @@ void RS_GS::init(double jd,int n)
   this->Zjd  = jd = MS_aLon_t2( suoN(jd)*_pi*2 )*36525; //低精度的朔(误差10分钟)
   this->dT   = dt_T(jd); //deltat T
 
-  mystl::array2 zd = nutation2(jd/36525.0); //章动
+  std::array<double, 2> zd = nutation2(jd/36525.0); //章动
   double E = hcjj(jd/36525.0)+zd[1]; //黄赤交角
   double T;
-  mystl::array3 S,M,B;
-  mystl::vector<double> a(n*9);
+  std::array<double, 3> S,M,B;
+  std::vector<double> a(n*9);
   int i,k;
   
   for (i=0;i<n;i++)
@@ -72,12 +72,12 @@ void RS_GS::init(double jd,int n)
 
  }
 
-mystl::array3 RS_GS::chazhi(double jd,int xt)
+std::array<double, 3> RS_GS::chazhi(double jd,int xt)
 {//日月坐标快速计算(贝赛尔插值法),计算第p个根数开始的m个根数
   int p=xt*3,m=3; //计算第p个根数开始的m个根数
   int i, N=this->Zs.size()/9;
-  mystl::vector<double> B=this->Zs;
-  mystl::array3 z;
+  std::vector<double> B=this->Zs;
+  std::array<double, 3> z;
   int w = B.size()/N; //每节点个数
   double t = (jd-this->Zjd)/this->Zdt+N/2.0-0.5; //相对于第一点的时间距离
 
@@ -93,37 +93,37 @@ mystl::array3 RS_GS::chazhi(double jd,int xt)
   return z;
  }
 
-mystl::array3 RS_GS::cd2bse(mystl::array3 z,mystl::array3 I)
+std::array<double, 3> RS_GS::cd2bse(std::array<double, 3> z,std::array<double, 3> I)
 { //赤道转贝塞尔坐标
-  mystl::array3 r={z[0]-I[0],z[1],z[2]};
+  std::array<double, 3> r={z[0]-I[0],z[1],z[2]};
   r = llrConv(r,-I[1]);
   return llr2xyz(r);
 }
-mystl::array3 RS_GS::bse2cd(mystl::array3 z,mystl::array3 I )
+std::array<double, 3> RS_GS::bse2cd(std::array<double, 3> z,std::array<double, 3> I )
 { //贝塞尔转赤道坐标
-  mystl::array3 r = xyz2llr(z);
+  std::array<double, 3> r = xyz2llr(z);
   r = llrConv(r,I[1]);
   r[0] = rad2mrad(r[0]+I[0]);
   return r;
  }
-mystl::array3 RS_GS::bse2db(mystl::array3 z,mystl::array3 I ,bool f)
+std::array<double, 3> RS_GS::bse2db(std::array<double, 3> z,std::array<double, 3> I ,bool f)
 { //贝赛尔转地标(p点到原点连线与地球的交点,z为p点直角坐标),f=1时把地球看成椭球
-  mystl::array3 r = xyz2llr(z);
+  std::array<double, 3> r = xyz2llr(z);
   r = llrConv(r,I[1]);
   r[0] = rad2rrad(r[0]+I[0]-I[2]);
   if(f) r[1] = atan( tan(r[1])/cs_ba2 );
   return r;
  }
-mystl::array3 RS_GS::bseXY2db(double x,double y,mystl::array3 I,bool f)
+std::array<double, 3> RS_GS::bseXY2db(double x,double y,std::array<double, 3> I,bool f)
 { //贝赛尔转地标(过p点垂直于基面的线与地球的交点,p坐标为(x,y,任意z)),f=1时把地球看成椭球
   double b=f?cs_ba:1;
   COORDP F = lineEar2(x,y,2,  x,y,0,  b,1,I);//求中心对应的地标
   return {F.J,F.W};
  }
 
-mystl::array3 RS_GS::bseM(double jd)
+std::array<double, 3> RS_GS::bseM(double jd)
 {  //月亮的贝塞尔坐标
-   mystl::array3 a=this->cd2bse(this->chazhi(jd,1),this->chazhi(jd,2));
+   std::array<double, 3> a=this->cd2bse(this->chazhi(jd,1),this->chazhi(jd,2));
    a[0]/=cs_rEar, a[1]/=cs_rEar, a[2]/=cs_rEar;
    return a;
 }
@@ -152,10 +152,10 @@ _RSM RS_GS::rSM(double mR)
   re.sf = cs_k2/mR/cs_k0*(this->dyj+mR); //食分
   return re;
  }
-mystl::array3 RS_GS::qrd(double jd,double dx,double dy,bool fs)
+std::array<double, 3> RS_GS::qrd(double jd,double dx,double dy,bool fs)
 { //求切入点
   double ba2 = this->bba*this->bba;
-  mystl::array3 M = this->bseM(jd);
+  std::array<double, 3> M = this->bseM(jd);
   double x=M[0], y=M[1];
   _RSM B = this->rSM(M[2]);
   double r = 0; if(fs==1) r = B.r1;
@@ -166,7 +166,7 @@ mystl::array3 RS_GS::qrd(double jd,double dx,double dy,bool fs)
   double c=(1-ba2)*r*x*y/d/d/d;
   x += c*y;
   y -= c*x;
-  mystl::array3 re=this->bse2db({x/d,y/d,0},this->bse(jd),1);
+  std::array<double, 3> re=this->bse2db({x/d,y/d,0},this->bse(jd),1);
   //re[0] +=0.275/radd; //转为deltatT为66秒的历书经度
   re[2]=jd;
   return re;
@@ -181,9 +181,9 @@ _FEATURE RS_GS::feature(double jd)
   _FEATURE re={};
   
   double ls;
-  mystl::array3 a = this->bseM(jd-tg);
-  mystl::array3 b = this->bseM(jd);
-  mystl::array3 c = this->bseM(jd+tg);
+  std::array<double, 3> a = this->bseM(jd-tg);
+  std::array<double, 3> b = this->bseM(jd);
+  std::array<double, 3> c = this->bseM(jd+tg);
   double vx = (c[0]-a[0])/tg/2;
   double vy = (c[1]-a[1])/tg/2;
   double vz = (c[2]-a[2])/tg/2;
@@ -242,7 +242,7 @@ _FEATURE RS_GS::feature(double jd)
   re.gk5[2]=t6+jd; //地方视午日食
 
   //日食类型、最大食地标、食分、太阳地平坐标
-  mystl::array3 lls;
+  std::array<double, 3> lls;
   if(F.W==100)
   { //无中心线
    //最大食地标及时分
@@ -290,7 +290,7 @@ _FEATURE RS_GS::feature(double jd)
 }
 
  //界线图
-void RS_GS::push(mystl::array3 z,mystl::vector<double> &p)
+void RS_GS::push(std::array<double, 3> z,std::vector<double> &p)
 {
    p.push_back(z[0]); //保存第一食甚线A或B根
    p.push_back(z[1]);
@@ -299,7 +299,7 @@ void RS_GS::push(mystl::array3 z,mystl::vector<double> &p)
 /*
 */
 
-mystl::array4 RS_GS::nanbei(mystl::array3 M,double vx0,double vy0, double h,double r,mystl::array3 I)
+std::array<double, 4> RS_GS::nanbei(std::array<double, 3> M,double vx0,double vy0, double h,double r,std::array<double, 3> I)
  { //vx0,vy0为影足速度(也是整个影子速度),h=1计算北界,h=-1计算南界
    double x=M[0]-vy0/vx0*r*h, y=M[1]+h*r, z;
    double vx,vy,v,sinA,cosA;
@@ -327,11 +327,11 @@ mystl::array4 RS_GS::nanbei(mystl::array3 M,double vx0,double vy0, double h,doub
    return {p.J, p.W, x, y};
  }
 
-bool RS_GS::mDian(mystl::array3 M,double vx0,double vy0,bool AB, double r,mystl::array3 I,mystl::vector<double> &A)
+bool RS_GS::mDian(std::array<double, 3> M,double vx0,double vy0,bool AB, double r,std::array<double, 3> I,std::vector<double> &A)
 { //日出日没食甚
    double R;
    NODE p;
-   mystl::array3 a = M;
+   std::array<double, 3> a = M;
    _VXY c={};
    for (int i=0;i<2;i++)
    { //迭代求交点
@@ -352,30 +352,30 @@ bool RS_GS::mDian(mystl::array3 M,double vx0,double vy0,bool AB, double r,mystl:
 }
 
 
-mystl::string RS_GS::jieX3(double jd)
+std::string RS_GS::jieX3(double jd)
  { //界线表
   double k, ls;
-  mystl::array4 p;
+  std::array<double, 4> p;
   int i;
   _FEATURE re=this->feature(jd);  //求特征参数
 
   double t = floor(re.jd*1440)/1440.0 - 3/24.0;
   double N=360, dt=1/1440.0;
-  mystl::string s="",s2;
+  std::string s="",s2;
 
   for(i=0;i<N;i++,t+=dt)
   {
    double vx = re.vx+re.ax*(t-re.jdSuo);
    double vy = re.vy+re.ay*(t-re.jdSuo);
-   mystl::array3 M = this->bseM(t);    //此刻月亮贝塞尔坐标(其x和y正是影足)
+   std::array<double, 3> M = this->bseM(t);    //此刻月亮贝塞尔坐标(其x和y正是影足)
    _RSM B = rSM(M[2]);  //本半影等
    double r = B.r1;            //半影半径
-   mystl::array3 I = this->bse(t);     //贝塞尔坐标参数
+   std::array<double, 3> I = this->bse(t);     //贝塞尔坐标参数
    s2 = JD2str(t+J2000)+" ", k=0;
    //南北界
    p = this->nanbei(M,vx,vy, +1, r,     I); if(p[1]!=100) s2+=rad2str2(p[0])+"  "+rad2str2(p[1])+" |", k++; else s2+="-------------------|"; //半影北界
    p = this->nanbei(M,vx,vy, +1, B.r2,  I); if(p[1]!=100) s2+=rad2str2(p[0])+"  "+rad2str2(p[1])+" |", k++; else s2+="-------------------|"; //本影北界
-   mystl::array3 pp = this->bseXY2db(M[0],M[1],I,1);
+   std::array<double, 3> pp = this->bseXY2db(M[0],M[1],I,1);
    p={pp[0],pp[1],pp[2]};
           if(p[1]!=100) s2+=rad2str2(p[0])+"  "+rad2str2(p[1])+" |", k++; else s2+="-------------------|"; //中心线
    p = this->nanbei(M,vx,vy, -1, B.r2,  I); if(p[1]!=100) s2+=rad2str2(p[0])+"  "+rad2str2(p[1])+" |", k++; else s2+="-------------------|"; //本影南界
@@ -389,7 +389,7 @@ mystl::string RS_GS::jieX3(double jd)
 /*
 1.暂时还没有作图工具
 2.可能存在bug
-void RS_GS::elmCpy(mystl::vector<double> &a,int n,mystl::vector<double> b,int m)
+void RS_GS::elmCpy(std::vector<double> &a,int n,std::vector<double> b,int m)
 { //数据元素复制
    if(!b.size()) return;
    if(n==-2) n=a.size();
@@ -401,20 +401,20 @@ void RS_GS::elmCpy(mystl::vector<double> &a,int n,mystl::vector<double> b,int m)
    a[n]=b[m], a[n+1]=b[m+1];
 }
 
-void RS_GS::mQie(mystl::array3 M,double vx0,double vy0,double h, double r,mystl::array3 I, mystl::vector<double> &A,_FLAG &FLAG)
+void RS_GS::mQie(std::array<double, 3> M,double vx0,double vy0,double h, double r,std::array<double, 3> I, std::vector<double> &A,_FLAG &FLAG)
 { //vx0,vy0为影足速度(也是整个影子速度),h=1计算北界,h=-1计算南界
-   mystl::array4 p=RS_GS::nanbei(M,vx0,vy0,h,r,I);
+   std::array<double, 4> p=RS_GS::nanbei(M,vx0,vy0,h,r,I);
    if(!FLAG.f2) FLAG.f2=0;   FLAG.f = p[1]==100?0:1; //记录有无解
    if(FLAG.f2!=FLAG.f)
    { //补线头线尾
      NODE g=lineOvl(p[2],p[3],vx0,vy0,1,RS_GS::bba);
      double dj;
-     mystl::array3 F;
+     std::array<double, 3> F;
      if(g.n){
       if(FLAG.f) dj=g.R2, F={g.B[0],g.B[1]};
       else    dj=g.R1, F={g.A[0],g.A[1]};
       F[2]=0;
-      mystl::array3 I2 = { I[0], I[1], I[2] - dj/sqrt(vx0*vx0+vy0*vy0)*6.28 };  //也可以不重算计算恒星时，直接用I[2]代替，但线头不会严格落在日出日没食甚线上
+      std::array<double, 3> I2 = { I[0], I[1], I[2] - dj/sqrt(vx0*vx0+vy0*vy0)*6.28 };  //也可以不重算计算恒星时，直接用I[2]代替，但线头不会严格落在日出日没食甚线上
       RS_GS::push( RS_GS::bse2db(F,I2,1), A);//有解补线头
      }
    }
@@ -435,7 +435,7 @@ _FEATURE RS_GS::jieX(double jd)
 
   _FLAG F1={},F2={},F3={},F4={},F5={},F6;
   //对日出日没食甚线预置一个点
-  mystl::vector<double> &Ua=re.q1,&Ub=re.q2;
+  std::vector<double> &Ua=re.q1,&Ub=re.q2;
   
   RS_GS::push({0,0},re.q2); RS_GS::push({0,0},re.q3); RS_GS::push({0,0},re.q4);
 
@@ -443,10 +443,10 @@ _FEATURE RS_GS::jieX(double jd)
   {
    double vx = re.vx+re.ax*(t-re.jdSuo);
    double vy = re.vy+re.ay*(t-re.jdSuo);
-   mystl::array3 M = RS_GS::bseM(t);    //此刻月亮贝塞尔坐标(其x和y正是影足)
+   std::array<double, 3> M = RS_GS::bseM(t);    //此刻月亮贝塞尔坐标(其x和y正是影足)
    _RSM B = RS_GS::rSM(M[2]);  //本半影等
    double r = B.r1;            //半影半径
-   mystl::array3 I = RS_GS::bse(t);     //贝塞尔坐标参数
+   std::array<double, 3> I = RS_GS::bse(t);     //贝塞尔坐标参数
 
    p=cirOvl(1,RS_GS::bba, r,M[0],M[1]); //求椭圆与圆交点
    if(n1%2) {if(!p.n) n1++;} else {if(p.n) n1++;}
@@ -465,8 +465,8 @@ _FEATURE RS_GS::jieX(double jd)
    }
 
    //求中心线
-   mystl::array3 lls;
-   mystl::array3 pp = RS_GS::bseXY2db(M[0],M[1],I,1);
+   std::array<double, 3> lls;
+   std::array<double, 3> pp = RS_GS::bseXY2db(M[0],M[1],I,1);
    if( pp[1]!=100&&n4==0 || pp[1]==100&&n4==1 )
    { //从无交点跳到有交点或反之
      ls=lineOvl(M[0],M[1],vx,vy,1,RS_GS::bba);
@@ -474,7 +474,7 @@ _FEATURE RS_GS::jieX(double jd)
      if(n4==0) dj=ls.R2,lls=ls.B; //首坐标
      else      dj=ls.R1,lls=ls.A; //末坐标
      lls[2]=0;
-     mystl::array3 I2 = {I[0], I[1], I[2] - dj/sqrt(vx*vx+vy*vy)*6.28 };  //也可以不重算计算恒星时，直接用I[2]代替，但线头不会严格落在日出日没食甚线上
+     std::array<double, 3> I2 = {I[0], I[1], I[2] - dj/sqrt(vx*vx+vy*vy)*6.28 };  //也可以不重算计算恒星时，直接用I[2]代替，但线头不会严格落在日出日没食甚线上
      RS_GS::push( RS_GS::bse2db(lls,I2,1), re.L0 );
      n4++;
    }
@@ -507,17 +507,17 @@ _FEATURE RS_GS::jieX(double jd)
 _JIEX2 RS_GS::jieX2(double jd)
 { //jd力学时
   _JIEX2 re={};
-  mystl::vector<double> p1, p2, p3;
+  std::vector<double> p1, p2, p3;
 
   if(fabs(jd-RS_GS::Zjd)>0.5) return re;
   
   int i;
   COORDP p;
   double s,x,y,X,Y;
-  mystl::array3 S = RS_GS::sun(jd);   //此刻太阳赤道坐标
-  mystl::array3 M = RS_GS::bseM(jd);  //此刻月亮
+  std::array<double, 3> S = RS_GS::sun(jd);   //此刻太阳赤道坐标
+  std::array<double, 3> M = RS_GS::bseM(jd);  //此刻月亮
   _RSM B = RS_GS::rSM(M[2]); //本半影等
-  mystl::array3 I = RS_GS::bse(jd);   //贝塞尔坐标参数
+  std::array<double, 3> I = RS_GS::bse(jd);   //贝塞尔坐标参数
   double Z = M[2];           //月亮的坐标的z量
 
   double a0=M[0]*M[0]+M[1]*M[1];
@@ -540,7 +540,7 @@ _JIEX2 RS_GS::jieX2(double jd)
     if(p.W!=100) RS_GS::push( {p.J,p.W}, p2 );
     else { if(sqrt(x*x+y*y)>a2) RS_GS::push( RS_GS::bse2db({x,y,0},I,1), p2 ); }
     //晨昏圈
-    mystl::array3 pp = llrConv({s,0,0},pi_2-S[1]);
+    std::array<double, 3> pp = llrConv({s,0,0},pi_2-S[1]);
     pp[0] = rad2rrad( pp[0]+S[0]+pi_2-I[2] );
     RS_GS::push(pp, p3);
   }

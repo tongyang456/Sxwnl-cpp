@@ -5,57 +5,21 @@
 #include "dizhi.hpp"
 
 struct BASE_SHISHEN{
-    std::string ns;
-    std::string ys;
-    std::string rs;
-    std::string ss;
-    
-    std::string nzb;
-    std::string nzz;
-    std::string nzy;
-
-    std::string yzb;
-    std::string yzz;
-    std::string yzy;
-
-    std::string rzb;
-    std::string rzz;
-    std::string rzy;
-
-    std::string szb;
-    std::string szz;
-    std::string szy;
+    std::string ns,nzb,nzz,nzy;
+    std::string ys,yzb,yzz,yzy;
+    std::string rs,rzb,rzz,rzy;
+    std::string ss,szb,szz,szy;
 };
 
 struct LN_SHISHEN{
-    std::string dys;
-    std::string ns;
-    std::string ys;
-    std::string rs;
-    std::string ss;
-
-    std::string dyzb;
-    std::string dyzz;
-    std::string dyzy;
-    
-    std::string nzb;
-    std::string nzz;
-    std::string nzy;
-
-    std::string yzb;
-    std::string yzz;
-    std::string yzy;
-
-    std::string rzb;
-    std::string rzz;
-    std::string rzy;
-
-    std::string szb;
-    std::string szz;
-    std::string szy;
+    std::string dys,dyzb,dyzz,dyzy;
+    std::string ns,nzb,nzz,nzy;
+    std::string ys,yzb,yzz,yzy;
+    std::string rs,rzb,rzz,rzy;
+    std::string ss,szb,szz,szy;
 };
 
-// 十神类  垃圾
+// 十神类
 class ShiShen {
 private:
     std::string sex;

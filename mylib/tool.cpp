@@ -1,19 +1,21 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "mystl/my_string.h"
+//#include "std/my_string.h"
 #include "tool.h"
 #include "math_patch.h"
 #include <map>
+#include <string>
+
 
 //实现字符替换
-void string_replace( mystl::string &strBig, const mystl::string &strsrc, const mystl::string &strdst)
+void string_replace( std::string &strBig, const std::string &strsrc, const std::string &strdst)
 {
-    mystl::string::size_type pos = 0;
-    mystl::string::size_type srclen = strsrc.size();
-    mystl::string::size_type dstlen = strdst.size();
+    std::string::size_type pos = 0;
+    std::string::size_type srclen = strsrc.size();
+    std::string::size_type dstlen = strdst.size();
 
-    while( (pos=strBig.find(strsrc, pos)) != mystl::string::npos )
+    while( (pos=strBig.find(strsrc, pos)) != std::string::npos )
     {
         strBig.replace( pos, srclen, strdst );
         pos += dstlen;
@@ -21,7 +23,7 @@ void string_replace( mystl::string &strBig, const mystl::string &strsrc, const m
 }
 
 //提取jd中的时间(去除日期)
-mystl::string timeStr(double jd)
+std::string timeStr(double jd)
 {
 	int h, m, s;
 	jd += 0.5;
@@ -31,7 +33,7 @@ mystl::string timeStr(double jd)
 	s -= h * 3600;
 	m = int2(s / 60.0);
 	s -= m * 60;
-	mystl::string H, M, S;
+	std::string H, M, S;
 	H = "0" + to_str(h);
 	M = "0" + to_str(m);
 	S = "0" + to_str(s);
@@ -39,12 +41,12 @@ mystl::string timeStr(double jd)
 }
 
 //===============角度格式化==================
-mystl::string rad2strE(double d, bool flag, int ext)
+std::string rad2strE(double d, bool flag, int ext)
 {	
 	//将弧度转为字串,ext为小数保留位数
 	//flag=0输出格式示例: -23°59" 48.23"
 	//flag=1输出格式示例:  18h 29m 44.52s
-	mystl::string s = " ", w1 = "°", w2 = "\'", w3 = "\"";
+	std::string s = " ", w1 = "°", w2 = "\'", w3 = "\"";
 	if (d < 0)
 		d = -d, s = "-";
 	if (flag)
@@ -70,7 +72,7 @@ mystl::string rad2strE(double d, bool flag, int ext)
 	if (b >= 60)
 		b -= 60, a++;
 
-	mystl::string A, B, C, D;
+	std::string A, B, C, D;
 	A = "   " + to_str(a);
 	B = "0" + to_str(b);
 	C = "0" + to_str(c);
@@ -84,16 +86,16 @@ mystl::string rad2strE(double d, bool flag, int ext)
 }
 
 //将弧度转为字串,保留2位
-mystl::string rad2str(double d, bool tim)
+std::string rad2str(double d, bool tim)
 {	
 	return rad2strE(d, tim, 2);
 }
 
 //将弧度转为字串,精确到分
-mystl::string rad2str2(double d)
+std::string rad2str2(double d)
 {	
 	//输出格式示例: -23°59"
-	mystl::string s = "+", w1 = "°", w2 = "\'", w3 = "\"";
+	std::string s = "+", w1 = "°", w2 = "\'", w3 = "\"";
 	if (d < 0)
 		d = -d, s = "-";
 	d *= 180 / M_PI;
@@ -101,16 +103,16 @@ mystl::string rad2str2(double d)
 	int b = floor((d - a) * 60 + 0.5);
 	if (b >= 60)
 		b -= 60, a++;
-	mystl::string A = "   " + to_str(a), B = "0" + to_str(b);
+	std::string A = "   " + to_str(a), B = "0" + to_str(b);
 	s += A.substr(A.length() - 3, 3) + w1;
 	s += B.substr(B.length() - 2, 2) + w2;
 	return s;
 }
 
 //秒转为分秒,fx为小数点位数,fs为1转为"分秒"格式否则转为"角度分秒"格式
-mystl::string m2fm(double v, int fx, int fs)
+std::string m2fm(double v, int fx, int fs)
 {
-	mystl::string gn = "";
+	std::string gn = "";
 	if (v < 0)
 		v = -v, gn = "-";
 	int f = floor(v / 60);
@@ -172,9 +174,9 @@ Date setFromJD(double jd)
 }
 
 // 日期对象转为字符串
-mystl::string DD2str(Date r)
+std::string DD2str(Date r)
 { 
-	mystl::string
+	std::string
 	Y = "     " + to_str(r.Y), 
 	M = "0" + to_str(r.M), 
 	D = "0" + to_str(r.D);
@@ -185,7 +187,7 @@ mystl::string DD2str(Date r)
 	if (m >= 60)
 		m -= 60, h++;
 
-	mystl::string _h, _m, _s;
+	std::string _h, _m, _s;
 	_h = "0" + to_str(h);
 	_m = "0" + to_str(m);
 	_s = "0" + to_str(s);
@@ -200,13 +202,13 @@ mystl::string DD2str(Date r)
 }
 
 // JD转为字符串
-mystl::string JD2str(double jd)
+std::string JD2str(double jd)
 {
 	Date r=setFromJD(jd);
 	return DD2str(r);
 }
 
-mystl::string fill_str(mystl::string s, int n, mystl::string c) {
+std::string fill_str(std::string s, int n, std::string c) {
 	int len=s.length();
 	for(int i=0;i<n-len;i++){
 		s=c+s;
@@ -385,7 +387,7 @@ int main() {
 	Date d = {-5621,11,12,10,30,50.6987};
 	// std::cout<<to_str(555)<<"\n";
 	// std::cout<<to_str(555.464,2)<<"\n";
-	// mystl::string ss = to_str(1234);
+	// std::string ss = to_str(1234);
 	// std::cout<<ss.begin() <<"\n";
 	std::cout<<DD2str(d)<<"\n";
 	std::cout<<"-->"<<my_stoi("12333")<<"\n";

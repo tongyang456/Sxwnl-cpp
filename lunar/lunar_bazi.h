@@ -2,8 +2,10 @@
 #define LUNAR_BAZI_H
 
 #include <list>
-#include "../mylib/mystl/my_string.h"
-#include "../mylib/mystl/vector.h"
+//#include "../mylib/mystl/my_string.h"
+//#include "../mylib/mystl/vector.h"
+#include <string>
+#include <vector>
 #include "../mylib/tool.h"
 #include "lunar.h"
 #include "lunar_ssq.h"

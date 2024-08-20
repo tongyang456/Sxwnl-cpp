@@ -11,12 +11,12 @@ void MSC::calc(double T, double L, double fa, double high)
 	this->dt = dt_T(T);			//TD-UT
 	this->jd = T - this->dt;	//UT
 	T /= 36525.0;
-	mystl::array2 zd = nutation2(T);
+	std::array<double, 2> zd = nutation2(T);
 	this->dL = zd[0];			//黄经章
 	this->dE = zd[1];			//交角章动
 	this->E = hcjj(T) + this->dE;	//真黄赤交角
 	this->gst = pGST(this->jd, this->dt) + this->dL * cos(this->E);	//真恒星时(不考虑非多项式部分)
-	mystl::array3 z;
+	std::array<double, 3> z;
 
 	//=======月亮========
 	//月亮黄道坐标
@@ -127,9 +127,9 @@ void MSC::calc(double T, double L, double fa, double high)
 		this->zx_J = this->zx_W = 100;
 }
 
-mystl::string MSC::toStr(bool fs)
+std::string MSC::toStr(bool fs)
 {
-	mystl::string s;
+	std::string s;
 	s = "-------------------------------------------\n";
 	s = s + "平太阳 " + timeStr(this->pty) + " 真太阳 " + timeStr(this->zty) + "\n";
 	s = s + "时差 " + m2fm(this->sc * 86400, 2, 1) + " 月亮被照亮 " + to_str(this->mIll * 100, 2) + "% ";

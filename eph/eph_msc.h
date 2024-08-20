@@ -1,7 +1,9 @@
 #ifndef EPH_MSC_H
 #define EPH_MSC_H
 
-#include "../mylib/mystl/my_string.h"
+//#include "../mylib/mystl/my_string.h"
+#include <string>
+#include "../mylib/tool.h"
 
 //========太阳月亮计算类=============
 class MSC
@@ -60,6 +62,6 @@ public:
 	 double zx_W;
 public:
 	 void calc(double T,double L,double fa,double high);
-	 mystl::string toStr(bool fs);
+	 std::string toStr(bool fs);
 };
 #endif

@@ -2,7 +2,7 @@
 #define TOOL_H
 
 #include <cstdlib>
-#include "../mylib/mystl/my_string.h"
+//#include "../mylib/std/my_string.h"
 #include "../mylib/math_patch.h"
 #include <sstream>
 #include <ctime>
@@ -10,6 +10,7 @@
 #include <iostream>
 #include <map>
 #include <chrono>
+#include <string>
 
 #define A2R(x) ((x) / 180 * M_PI)
 
@@ -32,18 +33,59 @@ struct Date
     }
 };
 
-//mystl::vector<mystl::string> split(const mystl::string& src, const mystl::string& separator);
-void string_replace( mystl::string &strBig, const mystl::string &strsrc, const mystl::string &strdst);
-mystl::string timeStr(double jd);
-mystl::string rad2strE(double d, bool tim, int ext);
-mystl::string rad2str(double d, bool tim);
-mystl::string rad2str2(double d);
-mystl::string m2fm(double v, int fx, int fs);
+template <class T>
+inline std::string to_str(T value, int precision = 4, int length = 0, bool right_align = false) {
+    std::string str;
+
+    if (std::is_floating_point<T>::value) { // 浮点数
+        // 使用 sprintf 或者其他方式来格式化浮点数
+        char temp[32];
+        sprintf(temp, "%.*f", precision, static_cast<double>(value));
+        str = temp;
+    } else { // 整数
+        str = std::to_string(value);
+    }
+
+    std::string fill(length > static_cast<int>(str.length()) ? length - static_cast<int>(str.length()) : 0, ' ');
+    return right_align ? (fill + str) : (str + fill);
+}
+
+inline int my_stoi(const std::string &str, typename std::string::size_type *pos = nullptr, int base = 10)
+{
+    typename std::string::value_type *end;
+    int answer = ::strtol(str.data(), &end, base);
+    if (end == str.data())
+    {
+        throw std::invalid_argument("invalid stof argument");
+    }
+
+    if (errno == ERANGE)
+    {
+        throw std::out_of_range("stof argument out of range");
+    }
+
+    if (pos)
+    {
+        *pos = end - str.data();
+    }
+
+    return answer;
+}
+
+
+
+//std::vector<std::string> split(const std::string& src, const std::string& separator);
+void string_replace( std::string &strBig, const std::string &strsrc, const std::string &strdst);
+std::string timeStr(double jd);
+std::string rad2strE(double d, bool tim, int ext);
+std::string rad2str(double d, bool tim);
+std::string rad2str2(double d);
+std::string m2fm(double v, int fx, int fs);
 double toJD(Date date);
 Date setFromJD(double jd);
-mystl::string DD2str(Date r);
-mystl::string JD2str(double jd);
-mystl::string fill_str(mystl::string s, int n, mystl::string c);
+std::string DD2str(Date r);
+std::string JD2str(double jd);
+std::string fill_str(std::string s, int n, std::string c);
 
 void getPreMDate(Date &date);
 void getNextMDate(Date &date);

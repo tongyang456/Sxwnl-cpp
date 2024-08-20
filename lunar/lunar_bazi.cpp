@@ -4,25 +4,24 @@
 #include "lunar.h"
 #include <iostream>
 #include <stdexcept>
+#include <cstring>
 #include "../eph/eph0.h"
 
 //通过农历日计算儒略日数
 bool Lunar::calcJulianDay( int lunarYear, int lunarMonth, int lunarDay, double &JulianDay )
 {
-    int jd = int2((lunarYear-2000.0)*365.2422+180);
-    mystl::static_array<mystl::string, 16> ym1;//各月名称
     int ZQ1[29] = {0};//中气表
     int HS1[17] = {0};;//合朔表
     int dx1[16] = {0};;//各月大小
     int ym[16] = {0};;
     int pe1[2] = {0};; //补算二气
     int leap1 = 0;  //闰月位置
-
     int *A = ZQ1, *B = HS1;  //中气表,日月合朔表(整日)
     int i;
     double W, w;
 
     //该年的气
+    int jd = int2((lunarYear-2000.0)*365.2422+180);
     W = int2((jd - 355 + 183) / 365.2422) * 365.2422 + 355;  //355是2000.12冬至,得到较靠近jd的冬至估计值
     if (SSQ::calc(W, 1) > jd) W -= 365.2422;
     for (i = 0; i < 29; i++)    //节气
@@ -54,10 +53,11 @@ bool Lunar::calcJulianDay( int lunarYear, int lunarMonth, int lunarDay, double &
     }
 
     //名称转换(月建别名)
+    std::array<std::string, 16> ym1;//各月名称
     for (i = 0; i < 16; i++) {
         double Dm = B[i] + J2000;
         int v2 = ym[i]; //Dm初一的儒略日,v2为月建序号
-        mystl::string mc = str_ymc[v2 % 12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
+        std::string mc = str_ymc[v2 % 12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
         if (Dm >= 1724360 && Dm <= 1729794) mc = str_ymc[(v2 + 1) % 12]; //  8.01.15至 23.12.02 建子为十二,其它顺推
         else if (Dm >= 1807724 && Dm <= 1808699) mc = str_ymc[(v2 + 1) % 12]; //237.04.12至239.12.13 建子为十二,其它顺推
         else if (Dm >= 1999349 && Dm <= 1999467) mc = str_ymc[(v2 + 2) % 12]; //761.12.02至762.03.30 建子为正月,其它顺推
@@ -178,7 +178,7 @@ std::list<LN_MONTH> Lunar::getLunarDate(int Year)
 {//农历排月序计算,可定出农历,有效范围：两个冬至之间(冬至一 <= d < 冬至二)
     int jd = int2((Year-2000.0)*365.2422+180);
     std::list<LN_MONTH> ret_M;
-    mystl::static_array<mystl::string, 16> ym1;//各月名称
+    std::array<std::string, 16> ym1;//各月名称
     int ZQ1[29];//中气表
     int HS1[17];//合朔表
     int dx1[16];//各月大小
@@ -225,7 +225,7 @@ std::list<LN_MONTH> Lunar::getLunarDate(int Year)
     for (i = 0; i < 16; i++) {
         double Dm = B[i] + J2000;
         int v2 = ym[i]; //Dm初一的儒略日,v2为月建序号
-        mystl::string mc = str_ymc[v2 % 12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
+        std::string mc = str_ymc[v2 % 12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
         if (Dm >= 1724360 && Dm <= 1729794) mc = str_ymc[(v2 + 1) % 12]; //  8.01.15至 23.12.02 建子为十二,其它顺推
         else if (Dm >= 1807724 && Dm <= 1808699) mc = str_ymc[(v2 + 1) % 12]; //237.04.12至239.12.13 建子为十二,其它顺推
         else if (Dm >= 1999349 && Dm <= 1999467) mc = str_ymc[(v2 + 2) % 12]; //761.12.02至762.03.30 建子为正月,其它顺推
@@ -238,7 +238,7 @@ std::list<LN_MONTH> Lunar::getLunarDate(int Year)
     }
 
     LN_MONTH lm_month;
-    mystl::string s="", s1,s2;
+    std::string s="", s1,s2;
     double v,qi;
     for(int i1=0;i1<16;i1++)
     {

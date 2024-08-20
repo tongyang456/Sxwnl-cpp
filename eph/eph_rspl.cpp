@@ -9,10 +9,10 @@ void RS_PL::secXY(double jd,double L,double fa,double high,_SECXY &re)
 { //日月xy坐标计算。参数：jd是力学时,站点经纬L,fa,海拔high(千米)
   //基本参数计算
   double deltat = dt_T(jd); //TD-UT
-  mystl::array2 zd=nutation2(jd/36525.0);
+  std::array<double, 2> zd=nutation2(jd/36525.0);
   double gst= pGST(jd-deltat,deltat) + zd[0]*cos(hcjj(jd/36525.0) + zd[1]); //真恒星时(不考虑非多项式部分)
 
-  mystl::array3 z;
+  std::array<double, 3> z;
   RS_GS rs_gs;
   //=======月亮========
   z=rs_gs.moon(jd); re.mCJ=z[0]; re.mCW=z[1]; re.mR=z[2]; //月亮视赤经,月球赤纬
@@ -173,18 +173,18 @@ void RS_PL::secMax(double jd,double L,double fa,double high)
 }
 
  //以下涉及南北界计算
- mystl::array3 A={}, B={}; //本半影锥顶点坐标
+ std::array<double, 3> A={}, B={}; //本半影锥顶点坐标
  _ZB P={};//t1时刻的日月坐标,g为恒星时
  _ZB Q={};//t2时刻的日月坐标
- mystl::array10 V;//食界表
- mystl::string Vc = "", Vb = "";  //食中心类型,本影南北距离
+ std::array<double, 10> V;//食界表
+ std::string Vc = "", Vb = "";  //食中心类型,本影南北距离
 
 void RS_PL::zb0(double jd)
 {
   //基本参数计算
   double deltat = dt_T(jd); //TD-UT
   double E=hcjj(jd/36525.0);
-  mystl::array2 zd=nutation2(jd/36525.0);
+  std::array<double, 2> zd=nutation2(jd/36525.0);
   RS_GS rs_gs;
   
   this->P.g = pGST(jd-deltat, deltat) + zd[0]*cos(E+zd[1]); //真恒星时(不考虑非多项式部分)
@@ -197,19 +197,19 @@ void RS_PL::zb0(double jd)
   this->Q.M=rs_gs.moon(t2);
 
   //转为直角坐标
-  mystl::array3 z1={}, z2={};
+  std::array<double, 3> z1={}, z2={};
   z1 = llr2xyz(this->P.S);
   z2 = llr2xyz(this->P.M);
 
   double k=959.63/cs_sMoon*cs_AU; //k为日月半径比
   //本影锥顶点坐标计算
-  mystl::array3 F = {
+  std::array<double, 3> F = {
    (z1[0]-z2[0])/(1-k)+z2[0],
    (z1[1]-z2[1])/(1-k)+z2[1],
    (z1[2]-z2[2])/(1-k)+z2[2]};
   this->A = xyz2llr(F);
   //半影锥顶点坐标计算
-  mystl::array3 FF = {
+  std::array<double, 3> FF = {
    (z1[0]-z2[0])/(1+k)+z2[0],
    (z1[1]-z2[1])/(1+k)+z2[1],
    (z1[2]-z2[2])/(1+k)+z2[2]};
@@ -218,8 +218,8 @@ void RS_PL::zb0(double jd)
 
 void RS_PL::zbXY(_ZB &p,double L,double fa)
 {
-  mystl::array3 s = {p.S[0],p.S[1],p.S[2]};
-  mystl::array3 m = {p.M[0],p.M[1],p.M[2]};
+  std::array<double, 3> s = {p.S[0],p.S[1],p.S[2]};
+  std::array<double, 3> m = {p.M[0],p.M[1],p.M[2]};
   s=parallax(s, p.g+L-p.S[0],fa, 0); //修正了视差的赤道坐标
   m=parallax(m, p.g+L-p.M[0],fa, 0); //修正了视差的赤道坐标
   //=======视半径========
@@ -238,7 +238,7 @@ void RS_PL::p2p(double L,double fa,_GJW &re,bool fAB,int f)
 
   double u=q.y-p.y, v=q.x-p.x, a=sqrt(u*u+v*v),r=959.63/p.S[2]/rad*cs_AU;
   double W=p.S[1]+f*r*v/a, J=p.S[0]-f*r*u/a/cos((W+p.S[1])/2.0), R=p.S[2];
-  mystl::array3 AA = fAB ? this->A : this->B;
+  std::array<double, 3> AA = fAB ? this->A : this->B;
   
   COORDP pp = lineEar({J,W,R}, AA, p.g );
   re.J = pp.J;
@@ -261,7 +261,7 @@ void RS_PL::nbj(double jd)
   RS_GS rs_gs;
   rs_gs.init(jd,7);
   _GJW G={};
-  mystl::array10 &V=this->V;
+  std::array<double, 10> &V=this->V;
   int i;
   for(i=0;i<10;i++) V[i]=100; this->Vc="",this->Vb=""; //返回初始化,纬度值为100表示无解,经度100也是无解,但在以下程序中经度会被转为-PI到+PI
 

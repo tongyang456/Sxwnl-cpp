@@ -12,7 +12,7 @@ double YS_PL::lineT(RE0 G,double v,double u, double r, bool n)
 void YS_PL::lecXY(double jd, RE0 &re)
 {//日月黄经纬差转为日面中心直角坐标(用于月食)
   double T=jd/36525;
-  mystl::array3 zm={}, zs={};
+  std::array<double, 3> zm={}, zs={};
 
   //=======太阳月亮黄道坐标========
   zs = e_coord(T,-1,-1,-1);   //地球坐标

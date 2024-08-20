@@ -1,8 +1,10 @@
 #ifndef LUNAR_SSQ_H
 #define LUNAR_SSQ_H
 
-#include "../mylib/mystl/my_string.h"
-#include "../mylib/mystl/static_array.h"
+//#include "../mylib/mystl/my_string.h"
+//#include "../mylib/mystl/static_array.h"
+#include <string>
+#include <array>
 
 class SSQ
 {
@@ -18,7 +20,7 @@ class SSQ
 
 public:
     int leap;  //闰月位置
-    mystl::static_array<mystl::string,14> ym;//各月名称
+    std::array<std::string,14> ym;//各月名称
     int ZQ[25];//中气表
     int HS[15];//合朔表
     int dx[14];//各月大小

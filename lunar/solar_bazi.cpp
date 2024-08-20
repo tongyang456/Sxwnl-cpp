@@ -822,12 +822,12 @@ OB_DAY Solar::riLiCalc(int By, int Bm, int Bd, int Bh, int Bmin, double Bs, doub
     int D1 = floor( jdBz);
     int SC = int2((jdBz - D1) * 12);
     int v = (D1 - 1) * 12 + 90000000 + SC;
-    std::string js = mystl::string(str_gan[v % 10]) + str_zhi[v % 12];
+    std::string js = std::string(str_gan[v % 10]) + str_zhi[v % 12];
     ob.Ltime2 = js;
     v -= SC, ob.bz_JS = "";		//全天纪时表
     for (i = 0; i < 13; i++)
     {							//一天中包含有13个纪时
-        mystl::string c = mystl::string(str_gan[(v + i) % 10]) + str_zhi[(v + i) % 12];	//各时辰的八字
+        std::string c = std::string(str_gan[(v + i) % 10]) + str_zhi[(v + i) % 12];	//各时辰的八字
         ob.bz_JS += (i ? " " : "") + c;
     }
 

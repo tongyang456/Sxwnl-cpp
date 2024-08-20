@@ -4,8 +4,10 @@
 #include <list>
 #include <set>
 #include <algorithm>
-#include "../mylib/mystl/my_string.h"
-#include "../mylib/mystl/vector.h"
+//#include "../mylib/mystl/my_string.h"
+//#include "../mylib/mystl/vector.h"
+#include <string>
+#include <vector>
 #include "../mylib/tool.h"
 #include "lunar.h"
 #include "eightchar_bazi.h"

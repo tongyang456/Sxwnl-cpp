@@ -27,14 +27,16 @@ API测试
 #include "../mylib/lat_lon_data.h"
 #include "../mylib/tool.h"
 #include "../mylib/math_patch.h"
-#include "../mylib/mystl/static_array.h"
-#include "../mylib/mystl/map.h"
+//#include "../mylib/mystl/static_array.h"
+//#include "../mylib/mystl/map.h"
+#include <array>
+#include <map>
 #include "solar_bazi.h"
 #include "eightchar_bazi.h"
 
 #define MAP_H 18
 #define MAP_W  7
-std::array<std::array<mystl::string, MAP_W>, MAP_H> strmap;
+std::array<std::array<std::string, MAP_W>, MAP_H> strmap;
 
 #include <iostream>
 #include <chrono>
@@ -66,17 +68,20 @@ int main() {
     // 农历基础
     init_ob();
 
+    MLBZ mlbz;
+    OBB::mingLiBaZi( toJD(dat)+(-8.0)/24-J2000, jw.J/radd, mlbz ); //八字计算
+
     std::string sex = "0"; //0男，1女
     JINGWEI jw1 = GeographicalPosition("凌源市");
 
     std::list<std::string> tstLst = Solar::fromBaZi("癸卯", "乙丑",
                                                     "癸酉", "庚申", 2, 1970);
 
-    //std::list<LN_MONTH> ss =  Lunar::getLunarDate(1993);
+    std::list<LN_MONTH> ss =  Lunar::getLunarDate(1993);
 
     for (int i = 0; i < 1; i++) {
 #if 1
-        Date base = {1990, 1, 1, 0, 0, 1.0};
+        Date base = {1993, 2, 26, 2, 0, 1.0};
         Date date = getDateAfter(base, {0,0,i,0,0,0.0});
         //OB_DAY days = Lunar::riLiCalc(date.Y, date.M, date.D, date.h, date.m, date.s, jw1.J);
         // 返回，有用信息

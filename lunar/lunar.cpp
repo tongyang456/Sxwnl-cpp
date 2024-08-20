@@ -196,10 +196,10 @@ OB_LUN yueLiCalc(int By, int Bm)
 }
 
 //万年历，准确计算方式；
-mystl::string nianLiSTR(int y)
+std::string nianLiSTR(int y)
 { //字符串年历生成
  int i,j;
- mystl::string s="", s1,s2;
+ std::string s="", s1,s2;
  double v,qi;
  SSQ ssq;
  ssq.calcY( int2((y-2000.0)*365.2422+180) );

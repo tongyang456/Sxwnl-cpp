@@ -85,7 +85,7 @@ char* SSQ::str_so;
 
 char *SSQ::jieya(int type)
 {
-	 mystl::string suoS = //  619-01-21开始16598个朔日修正表 d0=1947168
+	 std::string suoS = //  619-01-21开始16598个朔日修正表 d0=1947168
 		"EqoFscDcrFpmEsF2DfFideFelFpFfFfFiaipqti1ksttikptikqckstekqttgkqttgkqteksttikptikq2fjstgjqttjkqttgkqt"
 		"ekstfkptikq2tijstgjiFkirFsAeACoFsiDaDiADc1AFbBfgdfikijFifegF1FhaikgFag1E2btaieeibggiffdeigFfqDfaiBkF"
 		"1kEaikhkigeidhhdiegcFfakF1ggkidbiaedksaFffckekidhhdhdikcikiakicjF1deedFhFccgicdekgiFbiaikcfi1kbFibef"
@@ -122,7 +122,7 @@ char *SSQ::jieya(int type)
 	o5 = "00000000000000000000000000000000000000000000000000",
 	o6 = "000000000000000000000000000000000000000000000000000000000000";
 	
-	mystl::string str;
+	std::string str;
 	if (type) {
 		str=suoS;
 	} else {
@@ -343,7 +343,7 @@ void SSQ::calcY(double jd)
     {
         double Dm = HS[i]+J2000;
         int v2=ym[i]; //Dm初一的儒略日,v2为月建序号
-        mystl::string mc = str_ymc[v2%12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
+        std::string mc = str_ymc[v2%12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
         if      ( Dm>=1724360 && Dm<=1729794 ) mc = str_ymc[(v2+1)%12]; //  8.01.15至 23.12.02 建子为十二,其它顺推
         else if ( Dm>=1807724 && Dm<=1808699 ) mc = str_ymc[(v2+1)%12]; //237.04.12至239.12.13 建子为十二,其它顺推
         else if ( Dm>=1999349 && Dm<=1999467 ) mc = str_ymc[(v2+2)%12]; //761.12.02至762.03.30 建子为正月,其它顺推
@@ -359,7 +359,7 @@ void SSQ::calcY(double jd)
 
 std::string SSQ::calcY1(double jd)
 {//农历排月序计算,可定出农历,有效范围：两个冬至之间(冬至一 <= d < 冬至二)
-    mystl::static_array<mystl::string, 16> ym1;//各月名称
+    std::array<std::string, 16> ym1;//各月名称
     int ZQ1[29];//中气表
     int HS1[17];//合朔表
     int dx1[16];//各月大小
@@ -406,7 +406,7 @@ std::string SSQ::calcY1(double jd)
     for (i = 0; i < 16; i++) {
         double Dm = B[i] + J2000;
         int v2 = ym[i]; //Dm初一的儒略日,v2为月建序号
-        mystl::string mc = str_ymc[v2 % 12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
+        std::string mc = str_ymc[v2 % 12]; //月建对应的默认月名称：建子十一,建丑十二,建寅为正……
         if (Dm >= 1724360 && Dm <= 1729794) mc = str_ymc[(v2 + 1) % 12]; //  8.01.15至 23.12.02 建子为十二,其它顺推
         else if (Dm >= 1807724 && Dm <= 1808699) mc = str_ymc[(v2 + 1) % 12]; //237.04.12至239.12.13 建子为十二,其它顺推
         else if (Dm >= 1999349 && Dm <= 1999467) mc = str_ymc[(v2 + 2) % 12]; //761.12.02至762.03.30 建子为正月,其它顺推
@@ -418,7 +418,7 @@ std::string SSQ::calcY1(double jd)
         ym1[i] = mc;
     }
 
-    mystl::string s="", s1,s2;
+    std::string s="", s1,s2;
     double v,qi;
     for(int i1=0;i1<16;i1++)
     {

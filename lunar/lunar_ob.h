@@ -1,9 +1,11 @@
 #ifndef LUNAR_OB_H
 #define LUNAR_OB_H
 
-#include "../mylib/mystl/my_string.h"
-#include "../mylib/mystl/vector.h"
+//#include "../mylib/mystl/my_string.h"
+//#include "../mylib/mystl/vector.h"
 #include "../mylib/tool.h"
+#include <string>
+#include <vector>
 
 struct OB_DAY
 {
@@ -20,7 +22,7 @@ struct OB_DAY
 	int weekN; 	// 本月的总周数
 	/* 日的农历信息 */
 	int Ldi;	   // 日距农历月首偏移
-	mystl::string Ldc;   // 日名称(农历),即'初一,初二等'
+	std::string Ldc;   // 日名称(农历),即'初一,初二等'
 	
 	int cur_dz; //冬至的天数
     int cur_lc; //立春的天数
@@ -28,38 +30,38 @@ struct OB_DAY
 	int cur_lq; //立秋的天数
 	int cur_mz; //芒种的天数
 	int cur_xs; //小暑的天数
-	mystl::string Lmc;  // 月名称
-	mystl::string Lmc2; // 月名称,这个+1
+	std::string Lmc;  // 月名称
+	std::string Lmc2; // 月名称,这个+1
 	int Ldn;   		// 月大小
-	mystl::string Lleap; 	// 闰状况 
+	std::string Lleap; 	// 闰状况 
 	/* 日的农历纪年、月、日、时及星座 */
 	int Lyear;		 	// 农历纪年(10进制,1984年起算,分界点可以是立春也可以是春节,在程序中选择一个)
 	int Lyear0;			// 农历纪年(春节)
-	mystl::string Lyear2;	// 干支纪年(立春)
-	mystl::string Lyear3;	// 干支纪年(春节)
+	std::string Lyear2;	// 干支纪年(立春)
+	std::string Lyear3;	// 干支纪年(春节)
 	int Lyear4;			// 干支纪年(黄帝纪元)
 	int Lmonth;			// 纪月处理,1998年12月7日(大雪)开始连续进行节气计数,0为甲子
-	mystl::string Lmonth2;   // 干支纪月
-	mystl::string Lday2; 	// 纪日
-	mystl::string Ltime2;	// 纪时
-	mystl::string Ljq;	   // 节气
-	mystl::string XiZ;   	// 星座
+	std::string Lmonth2;   // 干支纪月
+	std::string Lday2; 	// 纪日
+	std::string Ltime2;	// 纪时
+	std::string Ljq;	   // 节气
+	std::string XiZ;   	// 星座
 	/* 日的回历信息 */
 	int Hyear;	 	// 年(回历)
 	int Hmonth;		// 月(回历)
 	int Hday;	  	// 日(回历)
 	/* 日的其它信息 */
-	mystl::string yxmc;	// 月相名称
+	std::string yxmc;	// 月相名称
 	double yxjd;   	  // 月相时刻(儒略日)
-	mystl::string yxsj;	// 月相时间串
-	mystl::string jqmc;	// 节气名称
+	std::string yxsj;	// 月相时间串
+	std::string jqmc;	// 节气名称
 	double jqjd;	     // 节气时刻(儒略日)
-	mystl::string jqsj;	// 节气时间串
+	std::string jqsj;	// 节气时间串
 	
 	bool Fjia;          //放假日子
-	mystl::string A;    //重要喜庆日子名称
-	mystl::string B;    //重要日子名称
-	mystl::string C;    //各种日子名称
+	std::string A;    //重要喜庆日子名称
+	std::string B;    //重要日子名称
+	std::string C;    //各种日子名称
 
     double date_zty;
     std::string bz_JS;
@@ -67,13 +69,13 @@ struct OB_DAY
 
 struct MLBZ
 {
-    mystl::string bz_dy;		//大运
-	mystl::string bz_jn;		//纪年
-	mystl::string bz_jy;		//纪月
-	mystl::string bz_jr;		//纪日
-	mystl::string bz_js;		//纪时
-	mystl::string bz_JS;		//纪时 数组形式13个
-	mystl::string bz_zty;		//真太阳时
+    std::string bz_dy;		//大运
+	std::string bz_jn;		//纪年
+	std::string bz_jy;		//纪月
+	std::string bz_jr;		//纪日
+	std::string bz_js;		//纪时
+	std::string bz_JS;		//纪时 数组形式13个
+	std::string bz_zty;		//真太阳时
 	Date date_zty;              //真太阳时
 };
 
@@ -85,15 +87,15 @@ public:
 	static void getHuiLi(double d0,OB_DAY &r);	//计算回历信息
 
 private:
-	static mystl::vector<mystl::vector<mystl::string>> sFtv; //假日表,由init初始化
-	static mystl::vector<mystl::string> wFtv;
+	static std::vector<std::vector<std::string>> sFtv; //假日表,由init初始化
+	static std::vector<std::string> wFtv;
 };
 
 class OBB//农历对象，气朔计算等
 {
 public:
 	static void init();
-	static mystl::string getNH(int y);
+	static std::string getNH(int y);
 	static void getDayName2(OB_DAY &r);
 	static void mingLiBaZi(double jd, double J, MLBZ &ob);
 	static double qi_accurate(double W);
@@ -102,7 +104,7 @@ public:
 	static double so_accurate2(double jd);
 	
 private:
-	static mystl::vector<mystl::string> JNB;
+	static std::vector<std::string> JNB;
 };
 
 extern const char *str_num[];
