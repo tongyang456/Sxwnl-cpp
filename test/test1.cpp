@@ -17,8 +17,6 @@ API测试
 #include "../lunar/tiangan.hpp"
 #include "../lunar/lunar_ssq.h"
 #include "../lunar/dizhi.hpp"
-#include "../lunar/lunar_bazi.h"
-#include "../lunar/solar_bazi.h"
 #include "../lunar/wuxing.hpp"
 #include "../lunar/shishen.hpp"
 #include "../eph/eph_show.h"
@@ -29,8 +27,8 @@ API测试
 #include "../mylib/math_patch.h"
 #include <array>
 #include <map>
-#include "solar_bazi.h"
-#include "eightchar_bazi.h"
+#include "bazi.h"
+#include "triad.h"
 
 #define MAP_H 18
 #define MAP_W  7
@@ -70,12 +68,12 @@ int main() {
     OBB::mingLiBaZi( toJD(dat)+(-8.0)/24-J2000, jw.J/radd, mlbz ); //八字计算
 
     std::string sex = "0"; //0男，1女
-    JINGWEI jw1 = GeographicalPosition("凌源市");
+    JINGWEI jw1 = GeographicalPosition("北京");
 
-    std::list<std::string> tstLst = Solar::fromBaZi("癸卯", "乙丑",
-                                                    "癸酉", "庚申", 2, 1970);
+    std::list<Date> tstLst = Triad::fromBaZi("甲辰", "壬申",
+                                                    "丁巳", "丙午", 2, 1970);
 
-    std::list<LN_MONTH> ss =  Lunar::getLunarDate(1993);
+    std::list<LN_MONTH> ss =  Triad::getLunarDate(1993);
 
     for (int i = 0; i < 1; i++) {
 #if 1
@@ -86,7 +84,7 @@ int main() {
         EightChar eightChar(date, jw1, sex);
         ShiShen shiShen(eightChar.getCsMlbz(), sex);
 
-        double jd1 = toJD(date) - J2000;
+        double jd1 = toJD(date);
         MLBZ ob = eightChar.getCsMlbz();
         OB_DAY day = eightChar.getObDay();
 
@@ -150,16 +148,29 @@ int main() {
         std::cout << "命卦" << eightChar.calcMinggua() << std::endl;
 
         //计算阳历某一日对应的流年大运信息
-        MLBZ bzs = eightChar.calc(Solar(2026, 10, 1, 2, 1, 0));
-        std::cout << "2026,10,1,2,1,0" << bzs.bz_dy << bzs.bz_jn << bzs.bz_jy << bzs.bz_jr << bzs.bz_js << std::endl;
-
+        Triad td = Triad(2026, 10, 1, 2, 1, 0);
+        MLBZ bzs = eightChar.calc(td);
+        std::cout << td.to_string() << bzs.bz_dy << bzs.bz_jn << bzs.bz_jy << bzs.bz_jr << bzs.bz_js << std::endl;
         std::cout << shiShen.toFullString(shiShen.calcLiuNian(bzs)) << std::endl;
 
         //计算农历某一日对应的流年大运信息
-        MLBZ bzs1 = eightChar.calc(Lunar(2026, 3, 1, 2, 1, 0));
-        std::cout << "农历2026,1,1,2,1,0" << bzs1.bz_dy << bzs1.bz_jn << bzs1.bz_jy << bzs1.bz_jr << bzs1.bz_js
+        Triad td1 = Triad(1999, "二", "初六",2,1);
+        MLBZ bzs1 = eightChar.calc(td1);
+        std::cout << td1.to_string() << bzs1.bz_dy << bzs1.bz_jn << bzs1.bz_jy << bzs1.bz_jr << bzs1.bz_js
                   << std::endl;
         std::cout << shiShen.toFullString(shiShen.calcLiuNian(bzs1)) << std::endl;
+
+        Triad t(1999,2,26,1,1,1.0);
+        std::cout << t.to_string() << std::endl;
+
+        Triad t1(1999,"二","初六");
+        std::cout << t1.to_string() << std::endl;
+
+        Triad t2(toJD(dat) );
+        std::cout << t2.to_string() << std::endl;
+
+        Triad t3("己卯","壬申","乙巳","壬午");
+        std::cout << t3.to_string() << std::endl;
 #endif
     }
     return 0;

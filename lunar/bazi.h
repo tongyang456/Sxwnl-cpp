@@ -12,10 +12,9 @@
 #include <unordered_map>
 #include "../mylib/lat_lon_data.h"
 #include "../eph/eph0.h"
-#include "lunar_bazi.h"
+#include "triad.h"
 
-class EightChar
-{
+class EightChar {
 private:
     JINGWEI jngwei;
     std::string sex;
@@ -32,28 +31,36 @@ private:
     OB_DAY ob_day;
 
     int xXiuIdx(std::string str);
+
     std::string findLiuHe(std::string str);
-    std::string findZSheng(int strzhiIdx, int strganIdx );
+
+    std::string findZSheng(int strzhiIdx, int strganIdx);
+
     std::map<std::string, std::string> calcDayunMap();
 
 public:
-    inline double getCsJd(){ return this->csjd; }
-    inline double getDyJd(){ return this->dyjd; }
-    inline MLBZ getCsMlbz(){ return this->csmlbz; }
-    inline MLBZ getDyMlbz(){ return this->dymlbz; }
-    inline nJieQi getCsJieQi(){ return this->csjieqi; }
-    inline nJieQi getDyJieQi(){ return this->dyjieqi; }
-    inline Date getdYunyear(){ return this->dYunyear; }
-    inline std::array<std::string, 13> getDaYunArr(){ return this->daYun;}
-    inline std::array<std::string, 11> getXiaoYunArr(){ return this->xiaoYu;}
+    inline double getCsJd() { return this->csjd; }
+
+    inline double getDyJd() { return this->dyjd; }
+
+    inline MLBZ getCsMlbz() { return this->csmlbz; }
+
+    inline MLBZ getDyMlbz() { return this->dymlbz; }
+
+    inline nJieQi getCsJieQi() { return this->csjieqi; }
+
+    inline nJieQi getDyJieQi() { return this->dyjieqi; }
+
+    inline Date getdYunyear() { return this->dYunyear; }
+
+    inline std::array<std::string, 13> getDaYunArr() { return this->daYun; }
+
+    inline std::array<std::string, 11> getXiaoYunArr() { return this->xiaoYu; }
 
     EightChar(Date csdate, JINGWEI jngwei = jw, std::string sex = "0");    //0男，1女
 
-    //获取指定阳历日期对应的大运、流年、流月、流日、流时信息
-    MLBZ calc(Lunar lunar);
-
-    //获取指定阴历日期对应的大运、流年、流月、流日、流时信息
-    MLBZ calc(Solar solar);
+    //获取指定三合历历日期对应的大运、流年、流月、流日、流时信息
+    MLBZ calc(Triad triad);
 
     inline OB_DAY getObDay() { return this->ob_day; }
 

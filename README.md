@@ -13,9 +13,8 @@ cd build;
 
 项目整体布局：
     参考开源项目sxwnl进行创作，
-    lunar/lunar_bazi.cpp .hpp 农历相关信息
-    lunar/solar_bazi.cpp .hpp 公历相关信息
-    lunar/eightchar_bazi.cpp .hpp 八字相关信息
+    lunar/triad.cpp .hpp 三合历相关信息
+    lunar/bazi.cpp .hpp 八字相关信息
     wuxing.hpp、  五行、
     tiangan.hpp、  天干、
     dizhi.hpp、  地支、

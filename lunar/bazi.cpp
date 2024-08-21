@@ -1,22 +1,21 @@
-#include "eightchar_bazi.h"
+#include "bazi.h"
 #include "lunar_ob.h"
 #include "../mylib/lat_lon_data.h"
-#include "lunar_bazi.h"
-#include "solar_bazi.h"
+#include "triad.h"
 
 EightChar::EightChar(Date csdate, JINGWEI jngwei, std::string sex) {
     this->sex = sex;
-    this->ob_day = Solar::riLiCalc(csdate.Y, csdate.M, csdate.D,csdate.h,csdate.m,csdate.s, jngwei.J);
+    this->ob_day = Triad::riLiCalc(csdate.Y, csdate.M, csdate.D,csdate.h,csdate.m,csdate.s, jngwei.J);
 
     this->csjd = toJD(csdate);;
     OBB::mingLiBaZi(this->csjd + (-8.0) / 24 - J2000, jngwei.J / radd, this->csmlbz);  //出生时刻的命理八字信息
-    this->csjieqi = Solar::getXianglinJieQi(this->csmlbz.date_zty);
-    Date dayun = Solar::calcDaYun(sex, this->csmlbz.bz_jn.substr(3, 3),
+    this->csjieqi = Triad::getXianglinJieQi(this->csmlbz.date_zty);
+    Date dayun = Triad::calcDaYun(sex, this->csmlbz.bz_jn.substr(3, 3),
                                   structToTime(this->csmlbz.date_zty), this->csjieqi, this->dYunyear);
 
     this->dyjd = toJD(dayun);
     OBB::mingLiBaZi(this->dyjd + (-8.0) / 24 - J2000, jngwei.J / radd, this->dymlbz);  //大运时刻的命理八字信息
-    this->dyjieqi = Solar::getXianglinJieQi(this->dymlbz.date_zty);
+    this->dyjieqi = Triad::getXianglinJieQi(this->dymlbz.date_zty);
 
     int nianzhi = findIndex(this->csmlbz.bz_jn.substr(3, 3), str_zhi, 12, 0);
     int yuezhu = findIndex(this->csmlbz.bz_jy, sixth, 60, 0);
@@ -45,15 +44,15 @@ EightChar::EightChar(Date csdate, JINGWEI jngwei, std::string sex) {
 std::map<std::string, std::string> EightChar::calcDayunMap() {
     std::map<std::string, std::string> DayunMaptmp;
     DayunMaptmp.insert(std::make_pair(JD2str(this->csjd), this->xiaoYu[0]));
-    Lunar lunar1 = Lunar(this->dyjd);
+    Triad lunar1 = Triad(this->dyjd);
     std::string bz_jn;
     for (int i = 0; i < 12; i++) {
-        Date date = {lunar1.getYear() + i * 10, 2, 1, 0, 0, 0.0};
-        std::map<std::string, std::string> jieqiMap = Solar::getJqMap(date, 3);
+        Date date = {lunar1.lyear() + i * 10, 2, 1, 0, 0, 0.0};
+        std::map<std::string, std::string> jieqiMap = Triad::getJqMap(date, 3);
         for (const auto &pair: jieqiMap) {
             if (pair.second == "立春") {
                 Date dd = timeToStruct(string_to_time_t(pair.first));
-                OB_DAY ob_day = Solar::riLiCalc(dd.Y, dd.M, dd.D);
+                OB_DAY ob_day = Triad::riLiCalc(dd.Y, dd.M, dd.D);
                 if (ob_day.Lyear < this->ob_day.Lyear) continue;
                 int offset = this->ob_day.Lyear + this->dYunyear.Y;
                 if ((offset > ob_day.Lyear) || ((offset == ob_day.Lyear) && (ob_day.cur_lc < 0))) {
@@ -70,45 +69,28 @@ std::map<std::string, std::string> EightChar::calcDayunMap() {
     return DayunMaptmp;
 };
 
-MLBZ EightChar::calc(Solar solar) {
-    if( solar.getJulianDay() < this->csjd ){
-        throw std::invalid_argument("要计算时刻不能小于出生时刻");
-    }
-
-    MLBZ ob = {};
-    OBB::mingLiBaZi(solar.getJulianDay() + (-8.0) / 24 - J2000, jw.J / radd, ob);
-
-    Date datetmp = solar.toDate();
-    nJieQi jieqi = Solar::getxiangLinJieqi(this->daYunMap, datetmp);
-    ob.bz_dy = jieqi.pre_jqmc;
-
-    return ob;
-}
-
-//通过传入的农历日期，计算该八字对应的大运、流年、流月、流日、流时信息
-//只精确到日，原因很简单，不能精确到时刻
-MLBZ EightChar::calc(Lunar lunar) {
-    if (lunar.Lunar::ob_day.Lyear < this->ob_day.Lyear) {
+MLBZ EightChar::calc(Triad triad)
+{
+    if (triad.lyear() < this->ob_day.Lyear) {
         throw std::invalid_argument("要计算农历年不能小于出生农历年");
     }
 
     MLBZ ob = {};
     //OBB::mingLiBaZi(lunar.getJulianDay() + (-8.0) / 24 - J2000, jw.J / radd, ob);
-
     int offset = this->ob_day.Lyear + this->dYunyear.Y + 1984;
-    if ((offset > lunar.getYear()) || ((offset == lunar.getYear()) && (lunar.ob_day.cur_lc < 0))) {
-        ob.bz_dy = xiaoYu[lunar.getYear() - (this->ob_day.Lyear + 1984)];
+    if ((offset > triad.lyear()) || ((offset == triad.lyear()) && (triad.ob_day().cur_lc < 0))) {
+        ob.bz_dy = xiaoYu[triad.lyear() - (this->ob_day.Lyear + 1984)];
     } else {
-        ob.bz_dy = daYun[(lunar.getYear() - offset) / 10 % 10];
+        ob.bz_dy = daYun[(triad.lyear() - offset) / 10 % 10];
     }
 
-    ob.bz_jn = lunar.ob_day.Lyear2;
-    ob.bz_jy = lunar.ob_day.Lmonth2;
-    ob.bz_jr = lunar.ob_day.Lday2;
-    ob.bz_js = lunar.ob_day.Ltime2;
-    ob.date_zty = setFromJD(lunar.getJulianDay());
-    ob.bz_JS = lunar.ob_day.bz_JS;
-    ob.bz_zty = timeStr(lunar.getJulianDay() - J2000);
+    ob.bz_jn = triad.ob_day().Lyear2;
+    ob.bz_jy = triad.ob_day().Lmonth2;
+    ob.bz_jr = triad.ob_day().Lday2;
+    ob.bz_js = triad.ob_day().Ltime2;
+    ob.date_zty = setFromJD(triad.jd());
+    ob.bz_JS = triad.ob_day().bz_JS;
+    ob.bz_zty = timeStr(triad.jd() - J2000);
     return ob;
 }
 
